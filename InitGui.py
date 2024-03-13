@@ -1,7 +1,7 @@
 #
 #
 #
-print("ScriptNodeGUI: Init")
+print("MeshLinksGUI: Init")
 
 import ScriptNodes
 from MeshNodes import Cmd
@@ -12,12 +12,12 @@ def Reload( mod ):
     reload( mod )
     mod.Reload()
     
-print("ScriptNodeGUI: Import is done")
+print("MeshLinksGUI: Import is done")
 
-class ScriptNode( Workbench ):
+class MeshLinks( Workbench ):
     from NodesCommon import getIconPath
 
-    MenuText = "ScriptNodes"
+    MenuText = "Mesh Links"
     ToolTip  = "A description of my workbench"
     Icon     = getIconPath( "Logo.svg" )
 
@@ -30,8 +30,8 @@ class ScriptNode( Workbench ):
             "BoleanMeshBody",
             "BoleanMeshMesh", ] 
         
-        self.appendToolbar("ScriptNode toolbar", self.list) # creates a new toolbar with your commands
-        self.appendMenu("Script Nodes", self.list) # creates a new menu
+        self.appendToolbar("MeshLinks toolbar", self.list) # creates a new toolbar with your commands
+        self.appendMenu("MeshLinks Nodes", self.list) # creates a new menu
         #self.appendMenu(["An existing Menu", "My submenu"], self.list) # appends a submenu to an existing menu
 
     def Activated(self):
@@ -52,9 +52,9 @@ class ScriptNode( Workbench ):
         # This is not a template, the returned string should be exactly "Gui::PythonWorkbench"
         return "Gui::PythonWorkbench"
 
-wb = ScriptNode()
+wb = MeshLinks()
 wb._reload_ = Reload
 wb._mod_    = Cmd
 
 Gui.addWorkbench( wb ) 
-print("ScriptNodeGUI: Done")
+print("MeshLinksGUI: Done")

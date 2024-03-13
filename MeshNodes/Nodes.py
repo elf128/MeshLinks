@@ -1,6 +1,7 @@
 import FreeCAD
 import FreeCADGui
-import Part
+import Part, Mesh
+import os
 from Mesh import Mesh
 
 from PySide2 import QtGui, QtWidgets
@@ -9,8 +10,6 @@ from importlib import reload
 print( "MeshNodes.Nodes: Mod run" )
 
 from NodesCommon import getIconPath 
-
-    
 
 class MeshExportObj:
     def __init__(self, obj):
@@ -37,6 +36,12 @@ class MeshExportObj:
         # Check if the property that changed is LinkedBody
         if prop == "LinkedBody":
             self.execute( obj )
+            
+    def dumps( self ):
+        return None
+    
+    def loads( self, state ):
+        return None
 
             
 class MeshExportView:
@@ -56,6 +61,12 @@ class MeshExportView:
 
     def claimChildren(self):
         return [self.Object.LinkedBody]
+    
+    def dumps( self ):
+        return None
+    
+    def loads( self, state ):
+        return None
 
 class MeshImportObj:
     def __init__(self, obj):
@@ -63,54 +74,45 @@ class MeshImportObj:
 
         # Set initial properties
         obj.addProperty("App::PropertyFile", "SourceFile",   "MeshImport", "Source file for object importing")
-        vertices = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0)]
-        faces = [(0, 1, 2), (0, 2, 3)]
-        self.mesh = Mesh()
-        # Add vertices to the mesh
-        for vertex in vertices:
-            self.mesh.Points.extend( vertex )
 
-        # Add faces to the mesh
-        for face in faces:
-            self.mesh.Facets.extend(face)
-
-    def setViewProvider( self, vp ):
-        self.vp = vp
+#    def setViewProvider( self, vp ):
+#        self.vp = vp
         
     def execute( self, obj ):
         print( "MeshImportObj.Execute mesh Import " )
         # Execute the Python script referenced by the node
 
         filename = obj.SourceFile
-        if filename is not None and filename != "":
+        if filename is not None and filename != "" and os.path.isfile(filename):
             print(" MeshImportObj.execute( %s )" % filename )
-            try:
-                mesh = Part.Shape()
-                mesh.read( filename )
-            except Exception as e:
-                print( "MeshImportObj.execute: Error loading mesh. \n", str( e ) )
-            finally:
-                print("MeshImportObj.execute: update mesh" )
-                self.mesh = mesh
-                
-            try:
-                self.vp.Shape = self.mesh
-            except Exception as e:
-                print( "MeshImportObj.execute: Error during shape assignment\n", str( e ) )
+            
+            mesh = Mesh()
+            mesh.read( filename )
+            #self.mesh = mesh
+            #self.mesh = Part.makeBox( 10, 10, 10 )
+            
+            shape = Part.Shape()
+            shape.makeShapeFromMesh(mesh.Topology, 0.1)
+            obj.Shape = shape
                 
         else:
-            print("MeshImportObj: Filename is empty")
+            print("MeshImportObj: Filename is wrong", filename )
                 
-    def onChanged( self, obj, prop ):
-        print("MeshImportObj.onChanged", prop )
-        # Check if the property that changed is SourceFile
-        if prop == "SourceFile":
-            self.execute( obj )
+#    def onChanged( self, obj, prop ):
+#        print("MeshImportObj.onChanged", prop )
+#        # Check if the property that changed is SourceFile
+#        if prop == "SourceFile":
+#            self.execute( obj )
+    def dumps( self ):
+        return None
+    
+    def loads( self, state ):
+        return None
 
             
 class MeshImportView:
     def __init__(self, vobj):
-        self.Object = vobj.Object
+#        self.Object = vobj.Object
         vobj.Proxy = self
 
     def getIcon(self):
@@ -119,38 +121,59 @@ class MeshImportView:
 
     def attach(self, vobj):
         print( "MeshImportView.Attach" )
-        self.ViewObject = vobj
-        self.Object = vobj.Object
+#        self.ViewObject = vobj
+#        self.Object = vobj.Object
         vobj.Proxy = self
-        vobj.Object.Proxy.vp = self
+#        vobj.Object.Proxy.vp = self
 
     #def claimChildren(self):
     #    return [ self.Object ]
                 
-    #def getDisplayModes( self, obj ):
-    #    return [ "Shaded" ]
+    def getDisplayModes( self, obj ):
+        return []
     
-    #def getDefaultDisplayMode( self ):
-    #    return "Shaded"
+    def getDefaultDisplayMode( self ):
+        return "Shaded"
     
-    #def setDisplayMode( self, mode ):
-    #    pass
+    def setDisplayMode( self, mode ):
+        return mode
     
+    def updateData( self, obj, prop ):
+        print( "MeshImportView.updateData( ", prop, " )" )
+        
     def onChanged( self, vp, prop ):
-        print( "MeshImportView.onChanged( ", vp, prop, " )" )
+        print( "MeshImportView.onChanged( ", prop, " )" )
         if prop == "Visibility":
-            self.Visibility = vp.Visibility
+            #self.Visibility = vp.Visibility
             print( vp.Visibility )
+            
+    def dumps( self ):
+        return None
+    
+    def loads( self, state ):
+        return None
 
-def makeMeshExporter( body, filename ):
-    obj = doc.addObject("App::FeaturePython", "MeshExport")
-    me = Nodes.MeshExportObj( obj )
-    vp = Nodes.MeshExportView( obj.ViewObject )
+def makeMeshExport( body, filename ):
+    doc = FreeCAD.ActiveDocument
+    obj = doc.addObject("Part::FeaturePython", "MeshExport")
+    me = MeshExportObj( obj )
+    vp = MeshExportView( obj.ViewObject )
 
     # Set properties based on UI inputs
     obj.LinkedBody = body
     obj.SaveFile = filename
+    
+    return obj
 
+def makeMeshImport( filename ):
+    doc = FreeCAD.ActiveDocument
+    obj = doc.addObject("Part::FeaturePython", "MeshImport")
+    me = MeshImportObj( obj )
+    vp = MeshImportView( obj.ViewObject )
+
+    # Set properties based on UI inputs
+    obj.SourceFile = filename
+    return obj
 
     
 # Add a menu item to create the RunScriptNode

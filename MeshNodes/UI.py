@@ -1,6 +1,6 @@
 import FreeCAD
 import FreeCADGui
-import Part
+
 from PySide2 import QtGui, QtWidgets
 from importlib import reload
 
@@ -28,13 +28,9 @@ class MeshImporterTaskPanel:
     def accept(self):
         doc = FreeCAD.ActiveDocument
         if doc:
-            obj = doc.addObject("App::FeaturePython", "MeshImport")
-            me = Nodes.MeshImportObj( obj )
-            vp = Nodes.MeshImportView( obj.ViewObject )
-
-            # Set properties based on UI inputs
-            obj.SourceFile = self.form.OpenFile.text()
-
+            filename = self.form.OpenFile.text()
+            Nodes.makeMeshImport( filename )
+            
             FreeCADGui.Control.closeDialog()
             doc.recompute()
                 
@@ -61,7 +57,7 @@ class MeshExporterTaskPanel:
         if doc:
             body     = FreeCAD.ActiveDocument.getObject( self.form.ObjectName.text() )
             filename = self.form.SaveFile.text()
-            makeMeshExport( body, filename )
+            Nodes.makeMeshExport( body, filename )
 
             FreeCADGui.Control.closeDialog()
             doc.recompute()
