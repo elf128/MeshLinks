@@ -18,7 +18,7 @@ class ScriptNodeViewProvider:
         obj.Proxy = self
 
     def getIcon(self):
-        return getIconPath( "Logo.svg" )
+        return getIconPath( "Script.svg" )
 
     def attach(self, vobj):
         self.ViewObject = vobj
@@ -34,7 +34,7 @@ class createScriptNode():
 
     def GetResources( self ):
         return { "MenuText" : "Make new Script Node",
-                 "Pixmap"   : getIconPath( "Logo.svg" ),
+                 "Pixmap"   : getIconPath( "Script.svg" ),
                  "ToopTip"  : "This command makes new Script Node" }
     
     def Activated( self ):

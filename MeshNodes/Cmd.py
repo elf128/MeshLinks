@@ -3,13 +3,14 @@ import FreeCADGui
 import Part
 from PySide2 import QtGui, QtWidgets
 
-print( "MeshNodes.Cmd: Import" )
+from NodesCommon import getIconPath, Log
 
-from NodesCommon import getIconPath
+Log( "MeshNodes.Cmd: Import" )
+
 from MeshNodes import UI
 from importlib import reload
 
-print( "MeshNodes.Cmd: Mod run" )
+Log( "MeshNodes.Cmd: Mod run" )
 
 def Reload():
     reload( UI )
@@ -17,13 +18,12 @@ def Reload():
     
 class createMeshImport():
     def GetResources( self ):
-        return { "MenuText" : "Make new mesh exported",
+        return { "MenuText" : "Make new mesh importer",
                  "Pixmap"   : getIconPath( "Import.svg" ),
                  "ToopTip"  : "This command create mesh exporter" }
     
     def Activated( self ):
         panel = UI.MeshImporterTaskPanel()
-        #print( dir( FreeCADGui ) )
         FreeCADGui.Control.showDialog( panel )
         
     def IsActive( self ):
@@ -37,13 +37,12 @@ class createMeshImport():
 
 class createMeshExport():
     def GetResources( self ):
-        return { "MenuText" : "Make new mesh exported",
+        return { "MenuText" : "Make new mesh exporter",
                  "Pixmap"   : getIconPath( "Export.svg" ),
                  "ToopTip"  : "This command create mesh exporter" }
     
     def Activated( self ):
         panel = UI.MeshExporterTaskPanel()
-        #print( dir( FreeCADGui ) )
         FreeCADGui.Control.showDialog( panel )
         
     def IsActive( self ):
@@ -55,15 +54,14 @@ class createMeshExport():
         return False
     
 
-class createBooleanMeshBody():
+class createMeshBool():
     def GetResources( self ):
-        return { "MenuText" : "Make new mesh exported",
-                 "Pixmap"   : getIconPath( "BodyMesh.svg" ),
-                 "ToopTip"  : "This command create mesh exporter" }
+        return { "MenuText" : "Make operation between objects",
+                 "Pixmap"   : getIconPath( "Bool.svg" ),
+                 "ToopTip"  : "This command makes operation between objects" }
     
     def Activated( self ):
-        panel = UI.BooleanMeshBodyTaskPanel()
-        #print( dir( FreeCADGui ) )
+        panel = UI.MeshBoolTaskPanel()
         FreeCADGui.Control.showDialog( panel )
         
     def IsActive( self ):
@@ -75,28 +73,9 @@ class createBooleanMeshBody():
         return False
     
 
-class createBooleanMeshMesh():
-    def GetResources( self ):
-        return { "MenuText" : "-----",
-                 "Pixmap"   : getIconPath( "MeshMesh.svg" ),
-                 "ToopTip"  : "This command create mesh exporter" }
-    
-    def Activated( self ):
-        panel = UI.BooleanMeshMeshTaskPanel()
-        #print( dir( FreeCADGui ) )
-        FreeCADGui.Control.showDialog( panel )
-        
-    def IsActive( self ):
-        doc = FreeCAD.ActiveDocument
-        
-        if doc:
-            return True
-        
-        return False
-    
-FreeCADGui.addCommand( 'CreateMeshImport',      createMeshImport() )
-FreeCADGui.addCommand( 'CreateMeshExport',      createMeshExport() )
-#FreeCADGui.addCommand( 'CreateBooleanMeshBody', createBooleanMeshBody() )
-#FreeCADGui.addCommand( 'CreateBooleanMeshMesh', createBooleanMeshMesh() )
 
-print( "MeshNodes.Cmd: Done" )
+FreeCADGui.addCommand( 'CreateMeshImport', createMeshImport() )
+FreeCADGui.addCommand( 'CreateMeshExport', createMeshExport() )
+FreeCADGui.addCommand( 'CreateMeshBool',   createMeshBool() )
+
+Log( "MeshNodes.Cmd: Done" )

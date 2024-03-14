@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+    <class>MeshBoolTaskPanel</class>
+    <widget class="QDialog" name="MeshBoolTaskPanel">
+        
+        <property name="geometry">
+            <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>400</width>
+                <height>150</height>
+            </rect>
+        </property>
+        
+        <property name="windowTitle">
+                <string>Bool Node Properties</string>
+        </property>
+        
+        <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+                <widget class="QPushButton" name="ObjectSelection">
+                    <property name="text">
+                        <string>Select Object</string>
+                    </property>
+                </widget>
+            </item>
+            <item>
+                <widget class="QLineEdit" name="ObjectNames"/>
+            </item>
+
+            
+            <item>
+                <widget class="QGroupBox" name="OperationEnum">
+                                        
+                    <property name="title">
+                        <string>Enumeration Options</string>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_2">
+                        <item>
+                            <widget class="QRadioButton" name="Union">
+                                <property name="text">
+                                    <string>Union</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QRadioButton" name="Intersection">
+                                <property name="text">
+                                    <string>Intersection</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QRadioButton" name="Substraction">
+                                <property name="text">
+                                    <string>Substraction ( objects cuts from first selected )</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </widget>
+            </item>
+        </layout>
+        
+    </widget>
+    
+    <resources/>
+    <connections/>
+</ui>
+

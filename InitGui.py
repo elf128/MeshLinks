@@ -14,7 +14,7 @@ def Reload( mod ):
     
 print("MeshLinksGUI: Import is done")
 
-class MeshLinks( Workbench ):
+class MeshLinksWorkbench( Workbench ):
     from NodesCommon import getIconPath
 
     MenuText = "Mesh Links"
@@ -27,8 +27,7 @@ class MeshLinks( Workbench ):
             "CreateScriptNode",
             "CreateMeshImport",
             "CreateMeshExport",
-            "BoleanMeshBody",
-            "BoleanMeshMesh", ] 
+            "CreateMeshBool", ] 
         
         self.appendToolbar("MeshLinks toolbar", self.list) # creates a new toolbar with your commands
         self.appendMenu("MeshLinks Nodes", self.list) # creates a new menu
@@ -52,7 +51,7 @@ class MeshLinks( Workbench ):
         # This is not a template, the returned string should be exactly "Gui::PythonWorkbench"
         return "Gui::PythonWorkbench"
 
-wb = MeshLinks()
+wb = MeshLinksWorkbench()
 wb._reload_ = Reload
 wb._mod_    = Cmd
 

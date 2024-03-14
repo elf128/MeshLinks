@@ -14,4 +14,7 @@ def getUiPath( filename ):
 def getModRoot():
     return _dir_
 
+def Log( *args ):
+    print( *args )
+    
 print(" NodesCommon is in %s " % _dir_ )

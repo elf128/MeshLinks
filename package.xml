@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
+  <name>Mesh Links Workbench</name>
+  <description>Tools for automation Mesh import/export along with some operations in FreeCAD.</description>
+  <version>0.0.1</version>
+  <date>2024-03-14</date>
+  <maintainer email="elf128@gmail.com">Shai Seger</maintainer>
+  <license file="LICENSE">GPLv2</license>
+  <url type="repository" branch="master">https://github.com/elf128/MeshLinks</url>
+  <url type="readme">https://github.com/elf128/MeshLinks/blob/main/README.md</url>
+  <icon>Resources/icons/Logo.svg</icon>
+
+  <content>
+    <workbench>
+      <classname>MeshLinksWorkbench</classname>
+      <subdirectory>./</subdirectory>
+      <tag>meshlinks</tag>
+    </workbench>
+  </content>
+
+</package>

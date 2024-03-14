@@ -3,13 +3,13 @@ import FreeCADGui
 
 from PySide2 import QtGui, QtWidgets
 from importlib import reload
+from NodesCommon import getUiPath, Log
 
-print( "MeshNodes.UI: Import" )
+Log( "MeshNodes.UI: Import" )
 
 from MeshNodes import Nodes
-from NodesCommon import getUiPath
 
-print( "MeshNodes.UI: Mod run" )
+Log( "MeshNodes.UI: Mod run" )
 
 def Reload():
     reload( Nodes )
@@ -62,68 +62,48 @@ class MeshExporterTaskPanel:
             FreeCADGui.Control.closeDialog()
             doc.recompute()
 
-"""
-class BooleanMeshBodyTaskPanel:
+
+class MeshBoolTaskPanel:
     def __init__(self):
-        self.form = FreeCADGui.PySideUic.loadUi( getUiPath( "Body_Mesh.ui" ) )
+        self.op = 2
+        self.form = FreeCADGui.PySideUic.loadUi( getUiPath( "Bool.ui" ) )
         self.form.ObjectSelection.clicked.connect( self.selectObject )
-        self.selectObject()
 
-    def selectBody(self):
-        selection = FreeCADGui.Selection.getSelection()
-        if selection:
-            self.form.ObjectName.setText(selection[0].Label)
+        self.form.Union.clicked.connect( self.operationUnion )
+        self.form.Intersection.clicked.connect( self.operationIntersect )
+        self.form.Substraction.clicked.connect( self.operationSubstract )
+        self.form.Substraction.setChecked( True )
 
-    def selectMesh(self):
-        selection = FreeCADGui.Selection.getSelection()
-        if selection:
-            self.form.ObjectName.setText(selection[0].Label)
-            
-    def accept(self):
-        doc = FreeCAD.ActiveDocument
-        if doc:
-            obj = doc.addObject("App::FeaturePython", "MeshExport")
-            me = MeshNodes.MeshExportObj( obj )
-            vp = MeshNodes.MeshExportView( obj.ViewObject )
-
-            # Set properties based on UI inputs
-            obj.LinkedBody = FreeCAD.ActiveDocument.getObject( self.form.ObjectName.text() )
-            obj.SaveFile = self.form.SaveFile.text()
-
-            FreeCADGui.Control.closeDialog()
-            doc.recompute()
-
-
-class BooleanMeshMeshTaskPanel:
-    def __init__(self):
-        self.form = FreeCADGui.PySideUic.loadUi( getUiPath( "Body_Mesh.ui" ) )
-        self.form.ObjectSelection.clicked.connect( self.selectObject )
-        self.form.ExportFileBrowse.clicked.connect( self.browseFile )
         self.selectObject()
 
     def selectObject(self):
         selection = FreeCADGui.Selection.getSelection()
         if selection:
-            self.form.ObjectName.setText(selection[0].Label)
-
-    def browseFile(self):
-        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(None, "Export to", "", "Any (*.*)")
-        if fileName:
-            self.form.SaveFile.setText( fileName )
-
+            self.form.ObjectNames.setText( ",".join( s.Label for s in selection ) )
+        
+    def operationUnion( self ):
+        Log( "MeshBoolTaskPanel.operationUnion" )
+        self.op = 0
+    
+    def operationIntersect( self ):
+        Log( "MeshBoolTaskPanel.operationIntersect" )
+        self.op = 1
+    
+    def operationSubstract( self ):
+        Log( "MeshBoolTaskPanel.operationSubstract" )
+        self.op = 2
+    
     def accept(self):
         doc = FreeCAD.ActiveDocument
         if doc:
-            obj = doc.addObject("App::FeaturePython", "MeshExport")
-            me = MeshNodes.MeshExportObj( obj )
-            vp = MeshExportView( obj.ViewObject )
-
-            # Set properties based on UI inputs
-            obj.LinkedBody = FreeCAD.ActiveDocument.getObject( self.form.ObjectName.text() )
-            obj.SaveFile = self.form.SaveFile.text()
+            bodyNames = self.form.ObjectNames.text()
+            opNames   = [ "Union", "Intersection", "Substraction" ]
+            bodyList = [ FreeCAD.ActiveDocument.getObject( name ) for name in bodyNames.split(",") ]
+            
+            Nodes.makeBool( bodyList, opNames[ self.op ] )
 
             FreeCADGui.Control.closeDialog()
             doc.recompute()
-                
-"""
-print( "MeshNodes.UI: Done" )
+
+
+Log( "MeshNodes.UI: Done" )
